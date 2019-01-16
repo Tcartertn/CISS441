@@ -1,0 +1,47 @@
+import csv
+import json
+
+"""
+who: Tanner Carter
+when: 1.15.2019
+what: a1 assignment
+"""
+
+#,ID,Name,Age,Photo,Nationality,Flag,Overall,Potential,Club,Club Logo,Value,Wage,Special,
+#Preferred Foot,International Reputation,Weak Foot,Skill Moves,Work Rate,Body Type,Real Face,Position,Jersey Number,
+#Joined,Loaned From,Contract Valid Until,
+#Height,Weight,LS,ST,RS,LW,LF,CF,RF,RW,LAM,CAM,RAM,LM,LCM,CM,RCM,RM,LWB,LDM,CDM,RDM,RWB,LB,LCB,CB,RCB,RB,Crossing,Finishing,
+#HeadingAccuracy,ShortPassing,Volleys,Dribbling,Curve,FKAccuracy,LongPassing,BallControl,Acceleration,SprintSpeed,Agility,
+#Reactions,Balance,ShotPower,Jumping,Stamina,Strength,LongShots,Aggression,Interceptions,Positioning,Vision,
+#Penalties,Composure,Marking,StandingTackle,SlidingTackle,GKDiving,GKHandling,GKKicking,GKPositioning,GKReflexes,Release Clause
+
+player_data = []      # this is to collect data for printing at the very end. 
+player_total_count = 0    # for counting the rows of data
+with open('data.csv', 'r') as csvfile:
+
+    # parse csv file pointer into player_stream
+    player_stream = csv.DictReader(csvfile, delimiter=',', quotechar='"')
+
+    # interate over player_stream to process. 
+    try:
+        for player_data_row in player_stream:
+            player_total_count += 1
+
+            player_id = player_data_row['ID']
+            player_name = player_data_row['Name']
+            player_height = player_data_row['Height']
+            player_nationality = player_data_row['Nationality']
+
+
+            # only show the first 20 rows. 
+            if player_total_count <= 20:
+                print(player_total_count, player_id, player_name, player_height, player_nationality )
+                player_data.append({player_total_count: [player_id, player_name, player_height, player_nationality]
+                    })
+    except:
+        print('Something failed.')
+            
+print("I found " + str(player_total_count) + " players in this database.")
+print("I am all done processing data!!!")
+
+print(json.dumps(player_data))
