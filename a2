@@ -1,0 +1,73 @@
+import csv
+import sqlite3
+
+
+db_file = 'youtubedata.db'
+conn = sqlite3.connect(db_file)
+
+
+def create_youtube_table():
+    """
+    Here i am creating the table for my data.
+    """
+    c = conn.cursor()
+    sql_str = """
+        create table if not exists youtube_table (
+        Rank,
+        Grade,
+        Channel_name text,
+        Video_Uploads int,
+        Subscribers int,
+        Video_views int);
+        """
+    c.execute(sql_str)
+    conn.commit()
+
+
+def process_csv_file():
+
+    c = conn.cursor()
+
+    with open('data.csv', 'r') as csvfile:
+
+        # parse csv file pointer into youtube_stream
+        youtube_stream = csv.DictReader(csvfile, delimiter=',', quotechar='"')
+
+        # interate over youtube_stream to process. 
+        for r_ct, youtube_data_row in enumerate(youtube_stream):
+
+            youtube_rank = youtube_data_row['Rank']
+            youtube_channel_name = youtube_data_row['Channel_name'].replace("'","''")
+            youtube_subscribers = youtube_data_row['Subscribers']
+
+
+            # only show the first 20 rows. 
+            if r_ct <= 50:
+                strsql = """
+                    insert into youtube_table ( rank, Channel_name, Subscribers) values (
+                    '{youtube_rank}',
+                    '{youtube_channel_name}',
+                    '{youtube_subscribers}'
+                    );
+                """.format(
+                    youtube_rank=youtube_rank,
+                    youtube_channel_name=youtube_channel_name,
+                    youtube_subscribers=youtube_subscribers
+                )
+                
+                c.execute(strsql)
+                conn.commit()
+
+            # only show the first 20 rows. 
+            if r_ct <= 20:
+                print(r_ct, youtube_rank, youtube_channel_name, youtube_subscribers)
+
+
+
+def main():
+    print('Creating a Youtube DB from a csv file.')
+    create_youtube_table()
+    process_csv_file()
+
+if __name__ == "__main__":
+    main()
