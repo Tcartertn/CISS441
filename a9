@@ -1,0 +1,17 @@
+import requests
+from bs4 import BeautifulSoup
+
+url = 'https://en.wikipedia.org/wiki/Hendersonville,_Tennessee'
+req = requests.get(url)
+webcontent = req.text
+soup = BeautifulSoup(webcontent, "html.parser")
+
+### title of the website
+ptitle = soup.title
+print('title of the web page: ', ptitle.string)
+
+### see all the hyper links
+for lnkct, link in enumerate(soup.find_all('a')):
+    lnk = link.get('href')
+    if lnk and lnkct < 30:
+        print('   ' + lnk)
